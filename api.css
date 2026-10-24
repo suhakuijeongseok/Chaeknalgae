@@ -9,5 +9,7 @@
 .api-status{font-size:13px;color:var(--green);margin:5px 0 20px}
 .cover-image{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#eeeae0;z-index:0;image-rendering:auto}
 .cover.has-image .cover-title,.cover.has-image .cover-author{display:none}
+.hero-book.has-cover{padding:0;background:#eeeae0!important;overflow:hidden;display:block}
+.hero-book.has-cover img{width:100%;height:100%;object-fit:contain;display:block;image-rendering:auto}
 .recommend-toolbar{display:flex;gap:8px;align-items:center}
 @media(max-width:570px){.api-search-row{grid-template-columns:1fr}.api-result{grid-template-columns:45px 1fr}.api-result button{grid-column:1/-1}.api-result img{width:45px;height:63px}}
