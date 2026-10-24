@@ -26,10 +26,14 @@ function rateLimit(req, res, next) {
 api.use(rateLimit);
 
 function clean(value) { return String(value || '').replace(/<[^>]*>/g, '').trim(); }
+function yes24HighRes(url) {
+  const value = String(url || '').replace(/^http:/, 'https:');
+  return /^https:\/\/image\.yes24\.com\/goods\/\d+(?:\/(?:SIDE|BACK))?\/(?:S|M|L|XL)$/i.test(value) ? value.replace(/\/(?:S|M|L|XL)$/i, '/XL') : value;
+}
 function normalizeBook(item, source) {
   const rawIsbn = clean(item.isbn13 || item.isbn);
   const isbn = rawIsbn.split(/\s+/).find(value => value.length === 13) || rawIsbn.split(/\s+/)[0] || '';
-  return { title: clean(item.bookname || item.title), author: Array.isArray(item.authors) ? item.authors.map(clean).join(', ') : clean(item.authors || item.author), publisher: clean(item.publisher), isbn, cover: item.bookImageURL || item.cover || item.thumbnail || '', sideCover: item.sideCover || '', backCover: item.backCover || '', description: clean(item.description || item.contents || item.contentDetail?.bookIntroduction || item.contentDetail?.bookSummary), pubDate: clean(item.publication_year || item.publication_date || item.pubDate || item.publishDate || item.datetime).slice(0, 10), link: item.link || item.url || '', totalPages: Number(item.pages) || 300, source };
+  return { title: clean(item.bookname || item.title), author: Array.isArray(item.authors) ? item.authors.map(clean).join(', ') : clean(item.authors || item.author), publisher: clean(item.publisher), isbn, cover: yes24HighRes(item.bookImageURL || item.cover || item.thumbnail), coverFallback: item.cover || item.bookImageURL || item.thumbnail || '', sideCover: yes24HighRes(item.sideCover), backCover: yes24HighRes(item.backCover), description: clean(item.description || item.contents || item.contentDetail?.bookIntroduction || item.contentDetail?.bookSummary), pubDate: clean(item.publication_year || item.publication_date || item.pubDate || item.publishDate || item.datetime).slice(0, 10), link: item.link || item.url || '', totalPages: Number(item.pages) || 300, source };
 }
 async function requestJson(url, options = {}) {
   const key = url.toString(), hit = cache.get(key);
