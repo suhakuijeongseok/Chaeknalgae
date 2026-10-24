@@ -1,0 +1,14 @@
+{
+  "name": "chaeknalgae-functions",
+  "private": true,
+  "main": "index.js",
+  "engines": { "node": "22" },
+  "scripts": {
+    "serve": "firebase emulators:start --only functions",
+    "deploy": "firebase deploy --only functions"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "firebase-functions": "^7.0.0"
+  }
+}

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1e3328" />
+  <title>책날개</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="api.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <button class="brand" data-page="home" aria-label="책날개 홈">
+        <span class="brand-mark">책</span><span><b>책날개</b><small>나의 독서 생활</small></span>
+      </button>
+      <nav id="nav">
+        <button class="nav-item active" data-page="home"><span>⌂</span>오늘의 서재</button>
+        <button class="nav-item" data-page="library"><span>▥</span>나의 서가</button>
+        <button class="nav-item" data-page="recommend"><span>✦</span>책 추천받기</button>
+        <button class="nav-item" data-page="timer"><span>◷</span>독서 타이머</button>
+        <button class="nav-item" data-page="records"><span>✎</span>독서 기록</button>
+        <button class="nav-item" data-page="stats"><span>◌</span>독서 통계</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <button class="nav-item" id="wallpaperBtn"><span>⚙</span>배경화면 꾸미기</button>
+        <div class="profile"><div class="avatar">나</div><span><b>책 읽는 사람</b><small>오늘도 한 페이지</small></span></div>
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div><p id="eyebrow">2026년 10월 24일</p><h1 id="pageTitle">오늘의 서재</h1></div>
+        <div class="header-actions"><button class="icon-btn" id="searchBtn" title="검색">⌕</button><button class="primary" id="addBookBtn">＋ 책 추가</button></div>
+      </header>
+      <div id="pageContent" class="page-content"></div>
+    </main>
+  </div>
+
+  <dialog id="bookDialog">
+    <form id="bookForm" method="dialog">
+      <div class="dialog-head"><div><p class="eyebrow">MY LIBRARY</p><h2 id="dialogTitle">새 책 추가</h2></div><button type="button" class="close" data-close>×</button></div>
+      <input type="hidden" name="id" />
+      <input type="hidden" name="isbn" />
+      <input type="hidden" name="cover" />
+      <input type="hidden" name="sideCover" />
+      <input type="hidden" name="backCover" />
+      <button type="button" class="api-search-trigger" id="apiSearchBtn">⌕ API에서 책 정보 검색</button>
+      <div class="form-grid">
+        <label class="wide">책 제목<input name="title" required placeholder="책 제목을 입력하세요" /></label>
+        <label>저자<input name="author" required placeholder="저자" /></label>
+        <label>출판사<input name="publisher" placeholder="출판사" /></label>
+        <label>상태<select name="status"><option value="reading">읽는 중</option><option value="want">읽고 싶어요</option><option value="done">다 읽었어요</option></select></label>
+        <label>전체 페이지<input name="totalPages" type="number" min="1" value="300" /></label>
+        <label>현재 페이지<input name="currentPage" type="number" min="0" value="0" /></label>
+        <label>평점<select name="rating"><option value="0">아직 없음</option><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select></label>
+        <label>읽기 시작한 날<input name="startDate" type="date" /></label>
+        <label>다 읽은 날<input name="endDate" type="date" /></label>
+        <label class="wide">나의 한줄평<textarea name="review" rows="3" placeholder="이 책을 한 문장으로 기억해 보세요"></textarea></label>
+      </div>
+      <div class="dialog-actions"><button type="button" class="ghost" data-close>취소</button><button class="primary" value="default">저장하기</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="apiSearchDialog">
+    <div class="dialog-head"><div><p class="eyebrow">BOOK API SEARCH</p><h2>책 정보 가져오기</h2></div><button class="close" data-close>×</button></div>
+    <div class="api-search-row"><input id="apiSearchQuery" placeholder="제목, 저자 또는 ISBN"><select id="apiProvider"><option value="yes24">예스24 고화질</option><option value="data4library">도서관 정보나루</option></select><button class="primary" id="runApiSearch">검색</button></div>
+    <div id="apiSearchResults" class="api-results"><div class="empty">검색어를 입력해 주세요.</div></div>
+  </dialog>
+
+
+  <dialog id="wallpaperDialog" class="wallpaper-dialog">
+    <div class="dialog-head"><div><p class="eyebrow">WALLPAPER STUDIO</p><h2>내 배경화면 꾸미기</h2></div><button class="close" data-close>×</button></div>
+    <p class="muted">책과 서가의 위치·크기를 조정한 뒤 이미지로 저장할 수 있어요.</p>
+    <div id="wallpaperPreview" class="wallpaper-preview"></div>
+    <div class="wallpaper-controls">
+      <label>왼쪽 책 크기 <input id="heroSize" type="range" min="70" max="140" value="100"></label>
+      <label>서가 크기 <input id="shelfSize" type="range" min="70" max="130" value="100"></label>
+    </div>
+    <div class="dialog-actions"><button class="ghost" data-close>닫기</button><button class="ghost" id="downloadWallpaper">PNG로 저장</button><button class="primary" id="applyWallpaper">Windows 배경으로 적용</button></div>
+  </dialog>
+
+  <div id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>

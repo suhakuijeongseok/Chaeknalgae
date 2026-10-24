@@ -1,0 +1,52 @@
+{
+  "name": "chaeknalgae",
+  "version": "0.1.0",
+  "description": "책과 함께 더 멀리 가는 Windows 독서 관리 앱",
+  "main": "electron/main.js",
+  "author": "Chaeknalgae",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "build": "electron-builder --win nsis portable",
+    "build:dir": "electron-builder --dir --win"
+  },
+  "devDependencies": {
+    "electron": "latest",
+    "electron-builder": "latest"
+  },
+  "build": {
+    "appId": "kr.chaeknalgae.app",
+    "productName": "책날개",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "index.html",
+      "styles.css",
+      "api.css",
+      "app-config.json",
+      "app.js",
+      "electron/**/*"
+    ],
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ],
+      "artifactName": "책날개-설치-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "책날개",
+      "installerLanguages": ["ko_KR"]
+    },
+    "portable": {
+      "artifactName": "책날개-포터블-${version}-${arch}.${ext}"
+    }
+  }
+}
