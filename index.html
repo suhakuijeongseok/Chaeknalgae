@@ -34,7 +34,7 @@
     <main>
       <header class="topbar">
         <div><p id="eyebrow">2026년 10월 24일</p><h1 id="pageTitle">오늘의 서재</h1></div>
-        <div class="header-actions"><button class="icon-btn" id="searchBtn" title="검색">⌕</button><button class="primary" id="addBookBtn">＋ 책 추가</button></div>
+        <div class="header-actions"><button class="primary" id="addBookBtn">＋ 책 추가</button></div>
       </header>
       <div id="pageContent" class="page-content"></div>
     </main>
@@ -62,7 +62,7 @@
         <label>다 읽은 날<input name="endDate" type="date" /></label>
         <label class="wide">나의 한줄평<textarea name="review" rows="3" placeholder="이 책을 한 문장으로 기억해 보세요"></textarea></label>
       </div>
-      <div class="dialog-actions"><button type="button" class="ghost" data-close>취소</button><button class="primary" value="default">저장하기</button></div>
+      <div class="dialog-actions"><button type="button" class="danger" id="deleteBookBtn">책 삭제</button><span class="dialog-spacer"></span><button type="button" class="ghost" data-close>취소</button><button class="primary" value="default">저장하기</button></div>
     </form>
   </dialog>
 
