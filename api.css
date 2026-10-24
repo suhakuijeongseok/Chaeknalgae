@@ -24,11 +24,11 @@
 @media(max-width:570px){.api-search-row{grid-template-columns:1fr}.api-result{grid-template-columns:45px 1fr}.api-result button{grid-column:1/-1}.api-result img{width:45px;height:63px}}
 
 /* 서가 카드: 넓은 화면에서도 책이 과도하게 늘어나지 않고 행이 가지런하게 보이도록 한다. */
-.books-grid{grid-template-columns:repeat(auto-fill,minmax(155px,220px));justify-content:start;align-items:start;column-gap:28px;row-gap:34px}
+.books-grid{grid-template-columns:repeat(auto-fill,minmax(145px,190px));justify-content:start;align-items:start;column-gap:24px;row-gap:22px}
 .book-card{display:flex;min-width:0;height:100%;flex-direction:column}
-.book-card .cover{width:100%;max-height:330px}
-.book-meta{display:flex;min-height:118px;flex-direction:column;align-items:flex-start;padding-top:14px}
-.book-meta b{display:-webkit-box;min-height:48px;white-space:normal;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-height:1.45}
+.book-card .cover{width:100%;aspect-ratio:3/4;max-height:255px}
+.book-meta{display:flex;min-height:92px;flex-direction:column;align-items:flex-start;padding-top:10px}
+.book-meta b{display:-webkit-box;min-height:40px;white-space:normal;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-height:1.35}
 .book-meta small{display:block;margin-top:2px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .book-meta .status-badge{margin-top:auto}
 
@@ -37,4 +37,4 @@
 .cover:not(.has-image) .cover-title{font-size:clamp(18px,1.4vw,23px);line-height:1.45;word-break:keep-all;overflow-wrap:anywhere}
 .cover:not(.has-image) .cover-author{position:absolute;left:22px;right:22px;bottom:22px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cover:not(.has-image):before{content:"책날개";position:absolute;top:21px;left:22px;font-size:9px;letter-spacing:.18em;opacity:.55}
-@media(max-width:570px){.books-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.book-card .cover{max-height:none}.book-meta{min-height:108px}}
+@media(max-width:570px){.books-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.book-card .cover{max-height:240px}.book-meta{min-height:88px}}
