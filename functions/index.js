@@ -44,6 +44,22 @@ async function requestJson(url, options = {}) {
 }
 function asyncRoute(handler) { return (req, res) => Promise.resolve(handler(req, res)).catch(error => { console.error(error); res.status(502).json({ error: error.message || '도서 API 요청에 실패했습니다.' }); }); }
 
+async function searchYes24(query, pageSize = 20) {
+  const url = new URL('https://apis.yes24.com/v1/goods/itemList');
+  url.search = new URLSearchParams({ query, category: 'BOOK', page: '1', pageSize: String(pageSize), detail: 'Y' });
+  const data = await requestJson(url, { headers: { 'X-Api-Key': YES24_API_KEY.value() } });
+  if (data.success === false) throw new Error(data.message || '예스24 API 요청에 실패했습니다.');
+  return (data.data?.items || []).map(x => normalizeBook(x, '예스24')).filter(x => x.title);
+}
+
+async function enrichRecommendation(book) {
+  try {
+    const matches = await searchYes24(book.isbn || book.title, 3);
+    const match = matches.find(x => book.isbn && x.isbn === book.isbn) || matches[0];
+    return match ? { ...book, ...match, reason: '독서 기록과 공공도서관 대출 데이터를 바탕으로 추천' } : book;
+  } catch { return book; }
+}
+
 api.get('/health', (_req, res) => res.json({ ok: true, service: 'chaeknalgae-api' }));
 
 api.post('/search', asyncRoute(async (req, res) => {
@@ -55,11 +71,7 @@ api.post('/search', asyncRoute(async (req, res) => {
     const data = await requestJson(url);
     return res.json({ books: (data.response?.docs || []).map(x => normalizeBook(x.doc || x, '도서관 정보나루')).filter(x => x.title) });
   }
-  const url = new URL('https://apis.yes24.com/v1/goods/itemList');
-  url.search = new URLSearchParams({ query, category: 'BOOK', page: '1', pageSize: '20', detail: 'Y' });
-  const data = await requestJson(url, { headers: { 'X-Api-Key': YES24_API_KEY.value() } });
-  if (data.success === false) throw new Error(data.message || '예스24 API 요청에 실패했습니다.');
-  res.json({ books: (data.data?.items || []).map(x => normalizeBook(x, '예스24')).filter(x => x.title) });
+  res.json({ books: await searchYes24(query) });
 }));
 
 api.post('/recommend', asyncRoute(async (req, res) => {
@@ -71,7 +83,8 @@ api.post('/recommend', asyncRoute(async (req, res) => {
   else { endpoint = 'loanItemSrch'; const end = new Date(), start = new Date(end); start.setMonth(start.getMonth() - 1); Object.assign(params, { startDt: start.toISOString().slice(0, 10), endDt: end.toISOString().slice(0, 10), pageNo: '1', pageSize: '20' }); }
   const url = new URL(`https://data4library.kr/api/${endpoint}`); url.search = new URLSearchParams(params);
   const data = await requestJson(url);
-  res.json({ books: (data.response?.docs || []).map(x => normalizeBook(x.doc || x, '도서관 정보나루')).filter(x => x.title) });
+  const recommendations = (data.response?.docs || []).map(x => normalizeBook(x.doc || x, '도서관 정보나루')).filter(x => x.title).slice(0, 8);
+  res.json({ books: await Promise.all(recommendations.map(enrichRecommendation)) });
 }));
 
 exports.api = onRequest({ region: 'asia-northeast3', secrets: [YES24_API_KEY, DATA4LIBRARY_KEY], timeoutSeconds: 30, memory: '256MiB', maxInstances: 10, cors: false }, api);
