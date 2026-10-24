@@ -60,6 +60,19 @@ async function enrichRecommendation(book) {
   } catch { return book; }
 }
 
+function extractBooks(data) {
+  const response = data?.response || {};
+  const rows = response.docs || response.list || response.result?.docs || [];
+  return rows.map(row => row.doc || row.book || row).filter(Boolean);
+}
+
+async function curatedFallback() {
+  const titles = ['어서 오세요, 휴남동 서점입니다', '도둑맞은 집중력', '파친코', '이처럼 사소한 것들', '모순', '물고기는 존재하지 않는다'];
+  const compact = value => clean(value).replace(/[\s()[\]{}:·,.'"!?-]/g, '');
+  const found = await Promise.all(titles.map(async title => { const matches = await searchYes24(title, 5); return matches.find(book => compact(book.title).includes(compact(title))) || matches[0]; }).map(p => p.catch(() => null)));
+  return found.filter(Boolean).map(book => ({ ...book, reason: '책날개 독자들이 함께 읽기 좋은 책' }));
+}
+
 api.get('/health', (_req, res) => res.json({ ok: true, service: 'chaeknalgae-api' }));
 
 api.post('/search', asyncRoute(async (req, res) => {
@@ -83,8 +96,8 @@ api.post('/recommend', asyncRoute(async (req, res) => {
   else { endpoint = 'loanItemSrch'; const end = new Date(), start = new Date(end); start.setMonth(start.getMonth() - 1); Object.assign(params, { startDt: start.toISOString().slice(0, 10), endDt: end.toISOString().slice(0, 10), pageNo: '1', pageSize: '20' }); }
   const url = new URL(`https://data4library.kr/api/${endpoint}`); url.search = new URLSearchParams(params);
   const data = await requestJson(url);
-  const recommendations = (data.response?.docs || []).map(x => normalizeBook(x.doc || x, '도서관 정보나루')).filter(x => x.title).slice(0, 8);
-  res.json({ books: await Promise.all(recommendations.map(enrichRecommendation)) });
+  const recommendations = extractBooks(data).map(x => normalizeBook(x, '도서관 정보나루')).filter(x => x.title).slice(0, 8);
+  res.json({ books: recommendations.length ? await Promise.all(recommendations.map(enrichRecommendation)) : await curatedFallback() });
 }));
 
 exports.api = onRequest({ region: 'asia-northeast3', secrets: [YES24_API_KEY, DATA4LIBRARY_KEY], timeoutSeconds: 30, memory: '256MiB', maxInstances: 10, cors: false }, api);
