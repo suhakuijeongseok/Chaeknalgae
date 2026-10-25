@@ -90,18 +90,6 @@
     <div class="dialog-actions"><button class="ghost" data-close>닫기</button><button class="ghost" id="downloadWallpaper">PNG로 저장</button><button class="primary" id="applyWallpaper">Windows 배경으로 적용</button></div>
   </dialog>
 
-  <dialog id="noteDialog">
-    <form id="noteForm" method="dialog">
-      <div class="dialog-head"><div><p class="eyebrow">READING NOTE</p><h2>독서 기록 추가</h2></div><button type="button" class="close" data-close>×</button></div>
-      <div class="form-grid">
-        <label class="wide">책 선택<select name="bookId" id="noteBookSelect" required></select></label>
-        <label class="wide">기억하고 싶은 문장<textarea name="quote" rows="4" required placeholder="책에서 발견한 문장을 적어주세요"></textarea></label>
-        <label class="wide">나의 생각<textarea name="memo" rows="3" placeholder="이 문장이 마음에 남은 이유를 적어보세요"></textarea></label>
-      </div>
-      <div class="dialog-actions"><button type="button" class="ghost" data-close>취소</button><button class="primary" value="default">기록 저장</button></div>
-    </form>
-  </dialog>
-
   <div id="toast" role="status"></div>
   <script src="app.js"></script>
 </body>
