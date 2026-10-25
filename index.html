@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="api.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
   <div class="app-shell">
@@ -24,6 +25,7 @@
         <button class="nav-item" data-page="timer"><span>◷</span>독서 타이머</button>
         <button class="nav-item" data-page="records"><span>✎</span>독서 기록</button>
         <button class="nav-item" data-page="stats"><span>◌</span>독서 통계</button>
+        <button class="nav-item" data-page="journey"><span>⌁</span>책을 통한 여행</button>
       </nav>
       <div class="sidebar-bottom">
         <button class="nav-item" id="wallpaperBtn"><span>⚙</span>배경화면 꾸미기</button>
@@ -91,6 +93,7 @@
   </dialog>
 
   <div id="toast" role="status"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
